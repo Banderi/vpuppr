@@ -42,39 +42,40 @@ margin_right = 1600.0
 margin_bottom = 900.0
 mouse_filter = 2
 size_flags_vertical = 3
-split_offset = 164
+split_offset = 165
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer"]
-margin_right = 184.0
+margin_right = 185.0
 margin_bottom = 864.0
 custom_styles/panel = SubResource( 1 )
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/PanelContainer"]
 margin_left = 5.0
-margin_right = 179.0
+margin_right = 180.0
 margin_bottom = 859.0
 custom_styles/panel = SubResource( 3 )
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/PanelContainer/PanelContainer"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 169.0
+margin_right = 170.0
 margin_bottom = 854.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="MenuList" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/PanelContainer/PanelContainer/ScrollContainer"]
-margin_right = 164.0
+margin_right = 165.0
 margin_bottom = 849.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/separation = 3
 
 [node name="Anchor" type="Control" parent="VBoxContainer/HSplitContainer/PanelContainer"]
 margin_left = 5.0
-margin_right = 179.0
+margin_right = 180.0
 margin_bottom = 859.0
 mouse_filter = 2
 
@@ -85,7 +86,7 @@ anchor_bottom = 1.0
 margin_right = 15.0
 
 [node name="Empty" type="Control" parent="VBoxContainer/HSplitContainer"]
-margin_left = 196.0
+margin_left = 197.0
 margin_right = 1600.0
 margin_bottom = 864.0
 mouse_filter = 2

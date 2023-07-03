@@ -17,6 +17,9 @@ const Tracking = preload("res://screens/gui/popups/tracking.tscn")
 const BlendShapes = preload("res://screens/gui/blend-shapes/blend_shapes.tscn")
 const Presets = preload("res://screens/gui/popups/presets.tscn")
 
+const MenuBtn = preload("res://screens/gui/menu_btn.tscn")
+const MenuPanel = preload("res://screens/gui/menu_panel.tscn")
+
 const BUILTIN_MENUS := {
 	"DEFAULT_GUI_MODEL": Model,
 	"DEFAULT_GUI_BONES": Bones,
@@ -43,7 +46,7 @@ func _ready() -> void:
 	var menu_list := $VBoxContainer/HSplitContainer/PanelContainer/PanelContainer/ScrollContainer/MenuList as VBoxContainer
 
 	for menu_name in BUILTIN_MENUS.keys():
-		var button := Button.new()
+		var button := MenuBtn.instance()
 		button.text = tr(menu_name)
 		button.connect("pressed", self, "_on_pressed", [BUILTIN_MENUS[menu_name], tr(menu_name)])
 
@@ -53,7 +56,7 @@ func _ready() -> void:
 		if not ext.extra.get(Globals.ExtensionExtraKeys.CAN_POPUP, false):
 			continue
 		
-		var button := Button.new()
+		var button := MenuBtn.instance()
 		button.text = tr(ext.translation_key)
 		button.connect("pressed", self, "_on_pressed", [load(ext.entrypoint), tr(ext.translation_key)])
 
@@ -91,14 +94,19 @@ func _on_pressed(scene, popup_name: String) -> void:
 		popup = res.unwrap()
 		move_child(popup, get_child_count() - 1)
 
+var split_relative_grabbed_offset = 0
 func _on_grabber_input(event: InputEvent, split_container: SplitContainer) -> void:
 	if event.is_action_pressed("left_click"):
+		split_relative_grabbed_offset = split_container.split_offset
 		grabber_grabbed = true
 	elif event.is_action_released("left_click"):
 		grabber_grabbed = false
 	
 	if grabber_grabbed and event is InputEventMouseMotion:
-		split_container.split_offset += event.relative.x
+		split_relative_grabbed_offset += event.relative.x
+		split_container.split_offset = split_relative_grabbed_offset
+		if split_container.split_offset < 165:
+			split_container.split_offset = 165
 
 func _on_grabber_mouse(entered: bool) -> void:
 	Input.set_default_cursor_shape(Input.CURSOR_HSIZE if entered else Input.CURSOR_ARROW)
