@@ -13,10 +13,21 @@ Cargo.lock
 **/*.so
 
 # Godot
+*.import
 .import/
 .mono/
 data_*/
 export/**
+export.cfg
+export_presets.cfg
+build/
+*.lnk
+
+# Mono
+.mono/
+
+# CLion
+**/.idea/
 
 **/temp
 **/OpenSeeFaceFolder
@@ -28,3 +39,6 @@ release_templates/
 
 # Should only be present during export
 release_config.toml
+
+# Project ignores
+resources/extensions/
