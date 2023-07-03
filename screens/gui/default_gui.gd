@@ -11,14 +11,11 @@ enum SidebarButtons {
 	PRESETS
 }
 
-const Model = preload("res://screens/gui/popups/model.tscn")
-const Bones = preload("res://screens/gui/popups/bones.tscn")
-const Tracking = preload("res://screens/gui/popups/tracking.tscn")
-const BlendShapes = preload("res://screens/gui/blend-shapes/blend_shapes.tscn")
-const Presets = preload("res://screens/gui/popups/presets.tscn")
-
-const MenuBtn = preload("res://screens/gui/menu_btn.tscn")
-const MenuPanel = preload("res://screens/gui/menu_panel.tscn")
+const Model = preload("res://screens/gui/menus/model.tscn")
+const Bones = preload("res://screens/gui/menus/bones.tscn")
+const Tracking = preload("res://screens/gui/menus/tracking.tscn")
+const BlendShapes = preload("res://screens/gui/menus/blend-shapes/blend_shapes.tscn")
+const Presets = preload("res://screens/gui/menus/presets.tscn")
 
 const BUILTIN_MENUS := {
 	"DEFAULT_GUI_MODEL": Model,
@@ -31,8 +28,6 @@ const BUILTIN_MENUS := {
 var logger: Logger
 onready var menu_bar: MenuBar = $VBoxContainer/MenuBar
 
-var grabber_grabbed := false
-
 #-----------------------------------------------------------------------------#
 # Builtin functions                                                           #
 #-----------------------------------------------------------------------------#
@@ -43,10 +38,10 @@ func _init() -> void:
 func _ready() -> void:
 	menu_bar.parent = self
 
-	var menu_list := $VBoxContainer/HSplitContainer/PanelContainer/PanelContainer/ScrollContainer/MenuList as VBoxContainer
+	var menu_list := $VBoxContainer/Runner/PanelContainer/PanelContainer/ScrollContainer/MenuList as VBoxContainer
 
 	for menu_name in BUILTIN_MENUS.keys():
-		var button := MenuBtn.instance()
+		var button := Button.new()
 		button.text = tr(menu_name)
 		button.connect("pressed", self, "_on_pressed", [BUILTIN_MENUS[menu_name], tr(menu_name)])
 
@@ -56,17 +51,26 @@ func _ready() -> void:
 		if not ext.extra.get(Globals.ExtensionExtraKeys.CAN_POPUP, false):
 			continue
 		
-		var button := MenuBtn.instance()
+		var button := Button.new()
 		button.text = tr(ext.translation_key)
 		button.connect("pressed", self, "_on_pressed", [load(ext.entrypoint), tr(ext.translation_key)])
 
 		menu_list.add_child(button)
 	
-	var grabber := $VBoxContainer/HSplitContainer/PanelContainer/Anchor/Grabber as Control
-	grabber.connect("gui_input", self, "_on_grabber_input", [$VBoxContainer/HSplitContainer])
-	grabber.mouse_default_cursor_shape = Control.CURSOR_HSIZE
+	# TODO: localization
+	$VBoxContainer/Runner/ControlsList.text = str(
+#		"\n",tr("NOTIFICATION_PRESS_ESCAPE_TO_HIDE_GUI"),
+#		"\n",tr("NOTIFICATION_PRESS_SPACE_TO_CALIBRATE")
+		"Escape: hide GUI\n",
+		"Shift + Escape: quit runner\n",
+		"Spacebar: recalibrate tracking\n",
+#		"Spacebar: recalibrate tracking\n",
+		""
+	)
 
 func _input(event: InputEvent) -> void:
+#	if event.is_action_pressed("back_to_main_menu"):
+#		get_tree().change_scene(Globals.LANDING_SCREEN_PATH)
 	if event.is_action_pressed("toggle_gui"):
 		visible = not visible
 		
@@ -77,6 +81,12 @@ func _input(event: InputEvent) -> void:
 # Connections                                                                 #
 #-----------------------------------------------------------------------------#
 
+func _set_mouse_input_propagation_recursive(n, mode):
+	for c in n.get_children():
+		if c is Control:
+			(c as Control).mouse_filter = mode
+			_set_mouse_input_propagation_recursive(c, mode)
+
 func _on_pressed(scene, popup_name: String) -> void:
 	var popup: WindowDialog
 
@@ -85,53 +95,30 @@ func _on_pressed(scene, popup_name: String) -> void:
 		if res.unwrap_err().code != Error.Code.TEMP_CACHE_MANAGER_KEY_NOT_FOUND:
 			logger.error(res)
 			return
-		popup = _create_popup(scene, popup_name)
+		popup = BasePopup.new(scene, popup_name)
 
 		AM.tcm.push(popup_name, popup).cleanup_on_signal(popup, "tree_exiting")
 
 		add_child(popup)
+		_set_mouse_input_propagation_recursive(popup, MOUSE_FILTER_PASS)
 	else:
 		popup = res.unwrap()
 		move_child(popup, get_child_count() - 1)
 
-var split_relative_grabbed_offset = 0
-func _on_grabber_input(event: InputEvent, split_container: SplitContainer) -> void:
-	if event.is_action_pressed("left_click"):
-		split_relative_grabbed_offset = split_container.split_offset
-		grabber_grabbed = true
-	elif event.is_action_released("left_click"):
-		grabber_grabbed = false
-	
-	if grabber_grabbed and event is InputEventMouseMotion:
-		split_relative_grabbed_offset += event.relative.x
-		split_container.split_offset = split_relative_grabbed_offset
-		if split_container.split_offset < 165:
-			split_container.split_offset = 165
-
-func _on_grabber_mouse(entered: bool) -> void:
-	Input.set_default_cursor_shape(Input.CURSOR_HSIZE if entered else Input.CURSOR_ARROW)
-
 func _on_popup_clicked(event: InputEvent, popup: Control) -> void:
 	if not event is InputEventMouseButton or not event.pressed:
 		return
-
 	move_child(popup, get_child_count() - 1)
 
 #-----------------------------------------------------------------------------#
 # Private functions                                                           #
 #-----------------------------------------------------------------------------#
 
-func _create_popup(scene, popup_name: String) -> BasePopup:
-	var popup: BasePopup = BasePopup.new(scene, popup_name)
-
-	return popup
-
 #-----------------------------------------------------------------------------#
 # Public functions                                                            #
 #-----------------------------------------------------------------------------#
 
 func add_child(node: Node, legible_unique_name: bool = false) -> void:
+	.add_child(node, legible_unique_name)
 	if node is BasePopup:
 		(node as BasePopup).connect("gui_input", self, "_on_popup_clicked", [node])
-	
-	.add_child(node, legible_unique_name)

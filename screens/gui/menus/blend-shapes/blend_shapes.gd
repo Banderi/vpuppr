@@ -1,6 +1,6 @@
 extends BaseLayout
 
-const BlendShapeItem: PackedScene = preload("res://screens/gui/blend-shapes/blend_shape_item.tscn")
+const BlendShapeItem: PackedScene = preload("res://screens/gui/menus/blend-shapes/blend_shape_item.tscn")
 
 onready var filter_bar := $TopBar/Filter
 onready var _blend_shape_list: VBoxContainer = $ScrollContainer/BlendShapeList

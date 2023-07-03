@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://screens/gui/popups/tracking.gd" type="Script" id=1]
+[ext_resource path="res://screens/gui/menus/tracking.gd" type="Script" id=1]
 
 [node name="Tracking" type="HSplitContainer"]
 anchor_right = 1.0
@@ -17,18 +17,18 @@ margin_right = 1600.0
 margin_bottom = 900.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DEFAULT_GUI_TRACKING_INFO_PAGE"]
-margin_right = 106.0
-margin_bottom = 18.0
+margin_right = 1587.0
+margin_bottom = 900.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="DEFAULT_GUI_TRACKING_INFO_PAGE/VBoxContainer"]
 margin_right = 1587.0
-margin_bottom = 14.0
+margin_bottom = 11.0
 text = "Running trackers"
 align = 1
 
 [node name="RunningTrackers" type="VBoxContainer" parent="DEFAULT_GUI_TRACKING_INFO_PAGE/VBoxContainer"]
-margin_top = 18.0
+margin_top = 15.0
 margin_right = 1587.0
-margin_bottom = 18.0
+margin_bottom = 15.0

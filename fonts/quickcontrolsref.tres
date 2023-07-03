@@ -1,14 +1,14 @@
 [gd_resource type="DynamicFont" load_steps=2 format=2]
 
-[ext_resource path="res://fonts/slkscr.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://fonts/RobotoMono-Regular.ttf" type="DynamicFontData" id=1]
 
 [resource]
 resource_name = "btn1_font"
-size = 17
+size = 15
 outline_size = 2
 outline_color = Color( 0, 0, 0, 0.176471 )
 extra_spacing_top = -2
-extra_spacing_bottom = -1
+extra_spacing_bottom = -3
 extra_spacing_char = -1
 extra_spacing_space = -1
 font_data = ExtResource( 1 )

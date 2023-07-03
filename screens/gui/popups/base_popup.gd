@@ -9,6 +9,9 @@ var screen: Node
 # Builtin functions                                                           #
 #-----------------------------------------------------------------------------#
 
+func _on_screen_gui_input(event):
+	print(2)
+
 func _init(p_screen, p_name: String = "") -> void:
 	if p_name.empty():
 		if p_screen is Resource:
@@ -31,10 +34,10 @@ func _init(p_screen, p_name: String = "") -> void:
 	var panel_container := PanelContainer.new()
 	
 	var stylebox := StyleBoxFlat.new()
-	stylebox.content_margin_top = 10
-	stylebox.content_margin_bottom = 10
-	stylebox.content_margin_left = 10
-	stylebox.content_margin_right = 10
+	stylebox.content_margin_top = 5
+	stylebox.content_margin_bottom = 5
+	stylebox.content_margin_left = 5
+	stylebox.content_margin_right = 5
 	stylebox.bg_color = Color("333a4f")
 	
 	panel_container.set_indexed("custom_styles/panel", stylebox)
@@ -57,6 +60,7 @@ func _init(p_screen, p_name: String = "") -> void:
 
 	screen.name = p_name
 	screen.set("logger", _logger)
+#	screen.connect("gui_input", self, "_on_screen_gui_input")
 
 	panel_container.add_child(screen)
 	

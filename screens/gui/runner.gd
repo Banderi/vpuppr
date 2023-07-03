@@ -12,6 +12,7 @@ func _init() -> void:
 func _setup_logger() -> void:
 	logger = Logger.new(self)
 
+var first_runner = false
 func _setup() -> Result:
 	_selectable_gui_count = _get_selectable_gui_count()
 
@@ -34,6 +35,10 @@ func _setup() -> Result:
 			]
 		})
 
+		# run VRM immediately
+		if !first_runner:
+			call_deferred("_on_run", ext.entrypoint, null)
+			first_runner = true
 		add_child(view)
 	
 	return ._setup()
@@ -61,7 +66,7 @@ func _post_setup() -> Result:
 #-----------------------------------------------------------------------------#
 
 func _on_run(path: String, toggle: CheckButton) -> void:
-	if toggle.pressed:
+	if toggle != null && toggle.pressed:
 		var popup := _create_gui_select(path)
 
 		add_child(popup)
@@ -128,7 +133,7 @@ func _create_view(data: Dictionary) -> ScrollContainer:
 		var image_texture := ImageTexture.new()
 		image_texture.create_from_image(preview_image_res.unwrap())
 		preview.texture = image_texture
-
+	preview.modulate = Color(0.5,0.5,0.5,0.5)
 	list.add_child(preview)
 
 	var select_gui_toggle := CheckButton.new()

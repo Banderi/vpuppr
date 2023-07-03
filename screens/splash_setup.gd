@@ -22,10 +22,10 @@ func _ready() -> void:
 	while not get_tree().root.has_node("/root/AM"):
 		yield(get_tree(), "idle_frame")
 
-	OS.window_size = OS.get_screen_size() * AM.screen_scaling
+#	OS.window_size = OS.get_screen_size() * AM.screen_scaling
 	OS.center_window()
 	
-	if AM.cm.get_data("skip_splash", false):
+	if AM.cm.get_data("skip_splash", true):
 		_switch_to_landing_screen()
 	
 	viewport = get_viewport()
